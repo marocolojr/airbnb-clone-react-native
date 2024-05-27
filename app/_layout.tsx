@@ -9,6 +9,7 @@ import ModalHeaderText from '@/components/ModalHeaderText';
 import { TouchableOpacity } from 'react-native';
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
 // Cache the Clerk JWT
 const tokenCache = {
   async getToken(key: string) {
@@ -31,24 +32,20 @@ const tokenCache = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    mon: require('../assets/fonts/Montserrat-Regular.ttf'),
-    'mon-sb': require('../assets/fonts/Montserrat-SemiBold.ttf'),
-    'mon-b': require('../assets/fonts/Montserrat-Bold.ttf'),
+  const [fontsLoaded] = useFonts({
+    'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf'),
+    ...Ionicons.font,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
+    if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded]);
 
-  if (!loaded) {
+  if (!fontsLoaded) {
     return null;
   }
 
@@ -78,7 +75,7 @@ function RootLayoutNav() {
           presentation: 'modal',
           title: 'Log in or sign up',
           headerTitleStyle: {
-            fontFamily: 'mon-sb',
+            fontFamily: 'Montserrat-SemiBold',
           },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
